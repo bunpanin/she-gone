@@ -21,12 +21,59 @@ pipeline {
         }
         // stage("Build"){
         //     steps{
-                
         //         sh """
-        //             docker build -t panin/jenkins-react-pipeline:${env.BUILD_NUMBER} . 
+        //             docker build -t jenkins-react-pipeline . 
         //         """
         //     }
         // }
+
+        // Build With Version Tag for Dockerhub
+        stage("Build"){
+            steps{
+                sh """
+                    docker build -t paninbaychar/jenkins-react-pipeline:${env.BUILD_NUMBER} . 
+                """
+            }
+        }
+        // Push to Dockerhub after Build
+        stage("Push to Dockerhub"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                    sh """
+                    echo '$PASSWORD' |  docker login -u $USERNAME --password-stdin   
+                    docker push paninbaychar/jenkins-react-pipeline:${env.BUILD_NUMBER} 
+                    """
+                }
+            }
+        }
+        
+        // stage("Deploy"){
+        //     steps{
+        //         sh"""
+        //         docker stop reactjs-cont || true 
+        //         docker rm reactjs-cont || true 
+
+
+        //         docker run -dp 3000:8080 \
+        //             --name reactjs-cont \
+        //             jenkins-react-pipeline
+        //         """
+        //     }
+        // }
+
+        // Deploy from Dockerhub Image
+        stage("Deploy"){
+            steps{
+                sh"""
+                docker stop reactjs-cont || true 
+                docker rm reactjs-cont || true 
+
+                docker run -dp 3000:8080 \
+                    --name reactjs-cont \
+                    paninbaychar/jenkins-react-pipeline:${env.BUILD_NUMBER}
+                """
+            }
+        }
 
         // stage("Push to Dockerhub "){
         //     steps{
