@@ -13,15 +13,17 @@ pipeline {
         // }
         stage('Telegram Message') {
             steps {
-                script {
-                    def token = "8430009847:AAHmwlgAqek4TGuuXakxgZBnGsFU1NGVb0o"
-                    def chatId = "5884420462"
 
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'TELEGRAM_BOT', passwordVariable: 'CHAT_ID', usernameVariable: 'TOKEN')]) {
                     sh """
-                    curl -s -X POST https://api.telegram.org/bot${token}/sendMessage \
-                        -d chat_id="${chatId}" \
+                    curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
+                        -d chat_id="${CHAT_ID}" \
                         -d text="Hello from Jenkins!"
                     """
+                    }
+                    // def token = "8430009847:AAHmwlgAqek4TGuuXakxgZBnGsFU1NGVb0o"
+                    // def chatId = "5884420462"
                 }
             }
         }
@@ -51,7 +53,7 @@ pipeline {
                 }
             }
         }
-        // wait for the quality gate 
+          // wait for the quality gate 
         stage("Wait for Quality Gate "){
             steps{
                 script{
@@ -65,24 +67,55 @@ pipeline {
                     }else {
                         echo "Quality of code is okay!! "
                         currentBuild.result='SUCCESS'
-                        return
                     }
                 }
+
             }
         }
         stage("Build"){
             when {
-                expression {
+                expression { 
                     currentBuild.result == 'SUCCESS'
                 }
             }
             steps{
-                //  sh """
-                //     docker build -t lyvanna544/jenkins-react-sonarqube-pipeline:${env.BUILD_NUMBER} . 
-                // """
-                echo " Building the docker image since QG is passed "
+                 sh """
+                    docker build -t paninbaychar/jenkins-react-sonarqube-pipeline:${env.BUILD_NUMBER} . 
+                """
             }
         }
+        // // wait for the quality gate 
+        // stage("Wait for Quality Gate "){
+        //     steps{
+        //         script{
+        //            def qg = waitForQualityGate()
+        //             if ( qg.status != 'OK'){
+        //                 sh """
+        //                 echo " No need to build since you QG is failed "
+        //                 """
+        //                 currentBuild.result='FAILURE'
+        //                 return 
+        //             }else {
+        //                 echo "Quality of code is okay!! "
+        //                 currentBuild.result='SUCCESS'
+        //                 return
+        //             }
+        //         }
+        //     }
+        // }
+        // stage("Build"){
+        //     when {
+        //         expression {
+        //             currentBuild.result == 'SUCCESS'
+        //         }
+        //     }
+        //     steps{
+        //         //  sh """
+        //         //     docker build -t lyvanna544/jenkins-react-sonarqube-pipeline:${env.BUILD_NUMBER} . 
+        //         // """
+        //         echo " Building the docker image since QG is passed "
+        //     }
+        // }
      
     }
 }
