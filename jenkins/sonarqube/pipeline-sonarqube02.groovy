@@ -28,7 +28,7 @@ pipeline {
             }
         }       
          // wait for the quality gate 
-        stage("Wait for Quality Gate"){
+        stage("Wait for Quality Gate "){
             steps{
                 script{
                    def qg = waitForQualityGate()
@@ -43,6 +43,7 @@ pipeline {
                         currentBuild.result='SUCCESS'
                     }
                 }
+
             }
         }
         stage("Build"){
@@ -52,7 +53,9 @@ pipeline {
                 }
             }
             steps{
-                echo "Building the docker image "
+                 sh """
+                    docker build -t paninbaychar/jenkins-react-sonarqube-pipeline:${env.BUILD_NUMBER} . 
+                """
             }
         }
         stage("Push"){
@@ -62,7 +65,25 @@ pipeline {
                 }
             }
             steps{
-                echo "Pushing the docker image to registry "
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+    
+                      sh """
+                    echo '$PASSWORD' |  docker login -u $USERNAME --password-stdin   
+                docker push paninbaychar/jenkins-react-sonarqube-pipeline:${env.BUILD_NUMBER} 
+                """
+                    }
+            }
+        }
+        stage("Deploy"){
+            steps{
+                sh"""
+                docker stop reactjs-cont || true 
+                docker rm reactjs-cont || true 
+
+                docker run -dp 3000:8080 \
+                    --name reactjs-cont \
+                    paninbaychar/jenkins-react-sonarqube-pipeline:${env.BUILD_NUMBER}
+                """
             }
         }
     }
@@ -70,14 +91,27 @@ pipeline {
         success{
             script{
                 withCredentials([usernamePassword(credentialsId: 'TELEGRAM_BOT', passwordVariable: 'CHAT_ID', usernameVariable: 'TOKEN')]) {
-                     sendTelegramMessage("Deployment is success! ","${TOKEN}","${CHAT_ID}")
+                    def successMessage="""
+                    Deployment is Success 👍
+                    🟢 Access Service: http://34.101.163.214:3000           
+                    📥  Job Name: ${env.JOB_NAME}
+                    🎱   Build Number: ${env.BUILD_NUMBER}
+                    """ 
+                    sendTelegramMessage("${successMessage}","${TOKEN}","${CHAT_ID}")
                 }
             }
         }
         failure {
             script{
                 withCredentials([usernamePassword(credentialsId: 'TELEGRAM_BOT', passwordVariable: 'CHAT_ID', usernameVariable: 'TOKEN')]) {
-                    sendTelegramMessage("Deployment is Failed! ","${TOKEN}","${CHAT_ID}")
+                    def errorMessage="""
+                    Deployment result in failures 🔥
+                    🟢 Access Report: https://jenkins.bunpanin.online/dashboard?id=reactjs-jenkins-template           
+                    📥  Job Name: ${env.JOB_NAME}
+                    🎱   Build Number: ${env.BUILD_NUMBER}
+                    """ 
+                    sendTelegramMessage("${errorMessage}",
+                        "${TOKEN}","${CHAT_ID}")
                 }
             }
         }

@@ -4,7 +4,8 @@ pipeline {
     stages {
         stage('Clone ReactJs Code ') {
             steps {
-                git branch: 'main', url: 'https://github.com/bunpanin/reactjs-template'
+                // git branch: 'main', url: 'https://github.com/bunpanin/reactjs-template'
+                git branch: 'sambo', url: 'https://github.com/SamboDea/job_posting/tree/sambo'
             }
         }
         stage("Check Code Quality in Sonarqube "){
@@ -14,8 +15,8 @@ pipeline {
             steps{
                 withSonarQubeEnv(credentialsId: 'SONARQUBE_TOKEN', installationName: 'sonarqube-scanner') {
                     script{
-                        def projectKey = 'reactjs-jenkins-template' 
-                        def projectName = 'ReactjsJenkinsTemplate'
+                        def projectKey = 'reactjs-jobposting' 
+                        def projectName = 'ReactjsJobposting'
                         def projectVersion = '1.0.0' 
                         sh """
                         ${scannerHome}/bin/sonar-scanner \
@@ -28,7 +29,7 @@ pipeline {
             }
         }       
          // wait for the quality gate 
-        stage("Wait for Quality Gate"){
+        stage("Wait for Quality Gate "){
             steps{
                 script{
                    def qg = waitForQualityGate()
@@ -43,42 +44,7 @@ pipeline {
                         currentBuild.result='SUCCESS'
                     }
                 }
-            }
-        }
-        stage("Build"){
-            when {
-                expression { 
-                    currentBuild.result == 'SUCCESS'
-                }
-            }
-            steps{
-                echo "Building the docker image "
-            }
-        }
-        stage("Push"){
-            when {
-                expression { 
-                    currentBuild.result == 'SUCCESS'
-                }
-            }
-            steps{
-                echo "Pushing the docker image to registry "
-            }
-        }
-    }
-    post{
-        success{
-            script{
-                withCredentials([usernamePassword(credentialsId: 'TELEGRAM_BOT', passwordVariable: 'CHAT_ID', usernameVariable: 'TOKEN')]) {
-                     sendTelegramMessage("Deployment is success! ","${TOKEN}","${CHAT_ID}")
-                }
-            }
-        }
-        failure {
-            script{
-                withCredentials([usernamePassword(credentialsId: 'TELEGRAM_BOT', passwordVariable: 'CHAT_ID', usernameVariable: 'TOKEN')]) {
-                    sendTelegramMessage("Deployment is Failed! ","${TOKEN}","${CHAT_ID}")
-                }
+
             }
         }
     }
