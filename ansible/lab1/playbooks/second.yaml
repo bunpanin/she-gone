@@ -1,0 +1,36 @@
+- name: Install Common Services
+  hosts: worker1,worker2
+  become: yes
+
+  tasks:
+
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+
+    - name: Install common packages
+      apt:
+        name:
+          - nginx
+          - docker.io
+          - docker-compose-plugin
+          - fish
+          - neofetch
+        state: present
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user pn to docker group
+      user:
+        name: pn
+        groups: docker
+        append: true
+
+    - name: Reset SSH connection to apply group changes
+      meta: reset_connection
+
+# ansible-playbook -i inventory.ini playbooks/second.yaml
