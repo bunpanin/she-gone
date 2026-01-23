@@ -1,0 +1,77 @@
+# 10.184.0.2 i use jenkins-server for nfs server
+# 10.184.0.4 -> Woker1
+# 10.184.0.5 -> Woker2
+
+- name: Setup NFS server
+  hosts: localhost
+  connection: local
+  become: yes
+
+  vars:
+    nfs_remote_dir: /srv/nfs/shared
+    nfs_client_ip1: 10.184.0.4
+    nfs_client_ip2: 10.184.0.5
+
+  tasks: 
+    - name: Update APT caches 
+      apt: 
+        update_cache: yes 
+        cache_valid_time: 3600
+        force_apt_get: yes
+    - name: Install NFS Kernel Server 
+      apt: 
+        name: nfs-kernel-server
+        state: present 
+    - name: Create Directory to used 
+      file: 
+        path: "{{ nfs_remote_dir }}"
+        state: directory
+        owner: nobody
+        group: nogroup
+        mode: "0777"
+    - name: Write Config on /etc/exports
+      lineinfile: 
+        path: /etc/exports
+        # line: " {{ nfs_remote_dir }} *(rw,sync,no_subtree_check,no_root_squash)"
+        line: " {{ nfs_remote_dir }} {{nfs_client_ip1}}(rw,sync,no_subtree_check,no_root_squash)  {{nfs_client_ip2}}(rw,sync,no_subtree_check,no_root_squash)"
+        state: present 
+        create: yes 
+    - name: Apply Configuration 
+      command: exportfs -ra 
+    - name: Restart NFS Kernel Service 
+      systemd: 
+        name: nfs-kernel-server
+        enabled: true 
+        state: restarted
+
+
+  # tasks:
+  #   - name : Update APT caches
+  #     apt:
+  #       update_cache: yes
+  #   - name: Install NFS Kernal server
+  #     apt:
+  #       name: nfs-kernel-server
+  #       state: present
+  #   - name: Create Directory for used
+  #     file:
+  #       path: "{{ nfs_remote_dir }}"
+  #       state: directory
+  #       ower: nobody
+  #       group: nogroup
+  #       mode: '0777'
+  #   # Configuration inside /etc/exports
+  #   - name: Write Config on /etc/exports ( tell which clients can use it )
+  #     lineinfile:
+  #       path: /etc/exports
+  #       # line: " {{ nfs_remote_dir }} *(rw,sync,no_subtree_check,no_root_squash)"
+  #       line: " {{ nfs_remote_dir }} {{nfs_client_ip1}}(rw,sync,no_subtree_check,no_root_squash) {{nfs_client_ip1}}(rw,sync,no_subtree_check,no_root_squash) "
+  #       state: present
+  #       Create: yes
+  #   - name: Apply Configuration
+  #     command: exports -ra
+  #   - name: Restart NFS Kernal Service
+  #     systemd:
+  #       name: nfs-kernel-server
+  #       enabled: true
+  #       state: restarted
