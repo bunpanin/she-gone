@@ -1,0 +1,10 @@
+# running role that we got from galaxy
+# on dir lab2  : ansible-galaxy role install geerlingguy.nginx -p roles
+---
+- name: Running Nginx Role 
+  hosts: worker1 
+  become: true 
+  roles: 
+    - role: geerlingguy.nginx
+
+
