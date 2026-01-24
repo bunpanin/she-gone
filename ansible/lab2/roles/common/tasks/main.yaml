@@ -1,0 +1,7 @@
+# Calling tasks to use
+---
+- name: Install common service
+  import_tasks: install_common_service.yaml
+- name: Uninstall common service
+  import_tasks: uninstall_common_service.yaml
+  when: false
