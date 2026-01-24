@@ -1,0 +1,12 @@
+---
+- name: Deploy Database
+  hosts: worker1
+  vars_files:
+    - ../vars/vault_db_credentail.yaml
+  tasks:
+    - name: Deploy database
+      debug:
+        msg: "Database Password : {{ db_password }} \n Database Username : {{ db_username }} "
+
+#  ansible-playbook playbooks/deploy_database.yaml --ask-vault-pass
+#  ansible-playbook playbooks/deploy_database.yaml --vault-password-file vars/vault-pass.txt
