@@ -2,6 +2,7 @@
 ---
 - name: Install common service
   import_tasks: install_common_service.yaml
+  when: isInstalled
 - name: Uninstall common service
   import_tasks: uninstall_common_service.yaml
-  when: false
+  when: not isInstalled
