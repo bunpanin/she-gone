@@ -1,1 +1,3 @@
 .env
+ansible/iaC/google-service-account.json
+ansible/lab2/vars/vault-pass.txt
