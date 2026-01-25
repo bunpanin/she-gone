@@ -2,11 +2,20 @@
 - name: Create google cloud instance
   hosts: localhost
   become: true
+  vars_files:
+    - ../vars/vault-data--credentail.yaml
   vars:
     machine_name: gcp-instance-ansible
-    google_project_id: google-project-id
-    service_account_path: google-service-account.json
+    service_account_path: ../google-service-account.json
+    ssh_public_key_path: /home/pn/.ssh/id_rsa.pub
   tasks:
+    - name: Deploy database
+      debug:
+        msg: "project_id {{ google_project_id }}"
+    - name: Slurp the local public key
+      slurp:
+        src: "{{ ssh_public_key_path }}"
+      register: ssh_pub_key
     - name: Install Pip3
       apt:
         name: python3-pip
@@ -18,18 +27,19 @@
           - google-auth
     - name: Create GCP instance
       google.cloud.gcp_compute_instance:
-        name: "{{machine_name}}"
+        name: "{{ machine_name }}"
         machine_type: "e2-medium"
         zone: "us-central1-a"
-        project: "{{google_project_id}}"
+        project: "{{ google_project_id }}"
         auth_kind: "serviceaccount"
         service_account_file: "{{ service_account_path }}"
         state: present
         metadata:
+          ssh-keys: "pn:{{ ssh_pub_key['content'] | b64decode }}"
           startup-script: |
             #!/bin/bash 
-            sudo apt update 
-            sudo apt install fish -y
+            sudo apt-get update && sudo apt-get upgrade -y
+            sudo apt-get install fish -y
         disks:
           - auto_delete: true
             boot: true
@@ -39,7 +49,7 @@
               disk_type: "pd-standard"
         network_interfaces:
           - network:
-              selfLink: "projects/{{google_project_id}}/global/networks/default"
+              selfLink: "projects/{{ google_project_id }}/global/networks/default"
             access_configs:
               - name: External NAT
                 type: ONE_TO_ONE_NAT
