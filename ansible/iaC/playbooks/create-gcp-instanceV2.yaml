@@ -5,7 +5,7 @@
   vars_files:
     - ../vars/vault-data--credentail.yaml
   vars:
-    machine_name: gcp-instance-ansible
+    machine_name: master1
     service_account_path: ../google-service-account.json
     ssh_public_key_path: /home/pn/.ssh/id_rsa.pub
   tasks:
@@ -64,5 +64,10 @@
         content: "{{ gcp_instance }}"
         dest: "./gcp_instance.json"
       when: true 
+    - name: Generate Inventory
+      template:
+        src: ../templates/gcp-inventory-template.j2
+        dest: ../inventory/host.ini
 
-# ansible-playbook playbooks/create-gcp-instance.yaml
+
+# ansible-playbook playbooks/crWriteeate-gcp-instance.yaml
