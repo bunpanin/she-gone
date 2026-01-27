@@ -2,4 +2,5 @@
 
 run create-instance:
     echo "Createing frist Google instance wtih ssh pub key"
-    ansible-playbook playbooks/create-gcp-instanceV2.yaml --vault-password-file vars/vault-data--credentail-pass.txt
+    # ansible-playbook playbooks/create-gcp-instanceV2.yaml --vault-password-file vars/vault-data--credentail-pass.txt
+    ansible-playbook playbooks/create-gcp-instanceV2.yaml --vault-password-file vars/password.txt
