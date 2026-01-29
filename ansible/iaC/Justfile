@@ -18,3 +18,7 @@ iac:
     ansible-playbook playbooks/create-masters-instace.yaml
     echo "Create all the workers ..... " 
     ansible-playbook playbooks/create-workers-instance.yaml
+
+deploy-all:
+    echo "Delete all Instace."
+    ansible-playbook playbooks/deploy-gcp.yaml
