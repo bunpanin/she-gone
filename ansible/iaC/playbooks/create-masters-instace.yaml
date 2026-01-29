@@ -1,0 +1,8 @@
+---
+- name: create master instance
+  hosts: localhost
+  vars_files:
+    - ../vars/machines.yaml
+  tasks:
+    - name: Debug vairable inside
+      import_tasks: tasks/create-masters-task.yaml
