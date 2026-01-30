@@ -1,0 +1,19 @@
+#!/bin/bash
+
+create-master:
+    echo "Creating master instance ..."
+    ansible-playbook playbooks/create-masters-instace.yaml
+
+create-worker:
+    echo "Creating worker instance ..."
+    ansible-playbook playbooks/create-workers-instance.yaml
+
+iac4-k8s: 
+    echo "Create all the masters ....  " 
+    ansible-playbook playbooks/create-masters-instace.yaml
+    echo "Create all the workers ..... " 
+    ansible-playbook playbooks/create-workers-instance.yaml
+
+deploy-all:
+    echo "Delete all Instace."
+    ansible-playbook playbooks/deploy-gcp.yaml

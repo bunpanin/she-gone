@@ -1,0 +1,8 @@
+---
+- name: create worker machines
+  hosts: localhost
+  vars_files:
+    - ../vars/machines.yaml
+  tasks:
+    - name: create worker instances
+      import_tasks: tasks/create-workers-task.yaml

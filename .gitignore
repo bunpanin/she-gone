@@ -3,3 +3,4 @@ ansible/iaC/google-service-account.json
 ansible/iaC/vars/vault-data--credentail-pass.txt
 ansible/lab2/vars/vault-pass.txt
 ansible/iaC/credentails/google-service-account.json
+ansible/iaC4-k8s/credentails/google-service-account.json
