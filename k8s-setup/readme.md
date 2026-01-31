@@ -36,3 +36,20 @@ ansible-playbook -b -v -i inventory/sample/inventory.ini \
 ansible-playbook -b -v -i inventory/sample/inventory.ini \
     reset.yml
 ```
+
+## After successful installation 
+```bash
+
+sudo kubectl get node 
+sudo kubectl get node -o wide 
+sudo kubectl get pod -A
+
+```
+
+## Type kubectl command without sudo 
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+```
