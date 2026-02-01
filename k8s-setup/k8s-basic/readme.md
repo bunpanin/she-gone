@@ -98,3 +98,10 @@ watch kubectl get pod
 
 
 ```
+
+### 3. Deployment
+```bash 
+kubectl get deployment 
+kubectl get deploy 
+
+```
