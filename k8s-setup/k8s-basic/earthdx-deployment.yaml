@@ -59,5 +59,7 @@ spec:
             name: earthdx-service
             port: 
               number: 80
+           
 
-# domain = earthdx-k8s.devnerd.store 
+
+# domain = earthdx.bunpanin.online 
