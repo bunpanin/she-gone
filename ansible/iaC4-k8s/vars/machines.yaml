@@ -1,5 +1,5 @@
 # service_account_path: "/home/bunpanin/credentials/service-account.json"
-service_account_path: "/home/bunpanin/she-gone/ansible/iaC/credentails/google-service-account.json"
+service_account_path: "/home/bunpanin/she-gone/ansible/iaC4-k8s/credentails/google-service-account.json"
 google_project_id: "digital-elysium-484213-d4"
 ssh_pubkey_path: "/home/bunpanin/.ssh/id_rsa.pub"
 

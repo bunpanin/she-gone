@@ -26,11 +26,12 @@
 - cert_manager_enabled :true 
 
 #### after the update you can run the command to start the cluster 
-```bash 
+```bash
 cd kubespray
-# To setup your HA cluster 
+# To setup your HA cluster
 ansible-playbook -b -v -i inventory/sample/inventory.ini \
     cluster.yml
+ansible-playbook -b -v -i inventory/sample/inventory.ini cluster.yml
 
 # to delete or reset your cluster 
 ansible-playbook -b -v -i inventory/sample/inventory.ini \
