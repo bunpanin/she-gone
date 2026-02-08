@@ -16,7 +16,6 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ### Configure Dashboard of K8s
 > addon.yaml -> enabled kubenete-dashboard 
 
-
 ```bash
 
 # to show all the services inside our clusters 
