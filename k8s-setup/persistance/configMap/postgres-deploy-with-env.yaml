@@ -16,6 +16,10 @@ spec:
         image: postgres:latest
         ports:
         - containerPort: 5432 
-        envFrom:
-          - configMapRef:
-              name: postgres-configmap
+        env:
+          - name: POSTGRESS_PASSWORD
+            value: password123
+          - name:  POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: student_db
