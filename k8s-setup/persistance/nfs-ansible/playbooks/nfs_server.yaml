@@ -1,0 +1,46 @@
+# 10.184.0.2 -> worker2
+# 10.148.0.6 -> worker 1
+# 10.148.0.3 -> nfs server 
+---
+- name: Setup NFS Server 
+  hosts: localhost
+  become: true
+  vars: 
+    nfs_remote_dir: /srv/nfs_shared
+    nfs_client_ips:
+      - 10.184.0.10
+      - 10.184.0.11
+      - 10.148.0.12
+      - 10.148.0.13
+  tasks: 
+    - name: Update APT caches 
+      apt: 
+        update_cache: yes 
+    - name: Install NFS Kernel Server 
+      apt: 
+        name: nfs-kernel-server
+        state: present 
+    - name: Create Directory to used 
+      file: 
+        path: "{{ nfs_remote_dir }}"
+        state: directory
+        owner: nobody
+        group: nogroup
+        mode: "0777"
+    - name: Configure the NFS Server exports 
+      blockinfile: 
+        path: /etc/exports
+        block: |
+          {{ nfs_remote_dir }} {{ export_entries }}
+        create: yes 
+        state: present 
+      vars: 
+        export_entries: >-
+          {{ nfs_client_ips | map('regex_replace', '^(.*)$', '\g<1>(rw,sync,no_subtree_check,no_root_squash)') | join(' ') }}
+    - name: Apply Configuration 
+      command: exportfs -ra 
+    - name: Restart NFS Kernel Service 
+      systemd: 
+        name: nfs-kernel-server
+        enabled: true 
+        state: restarted 
