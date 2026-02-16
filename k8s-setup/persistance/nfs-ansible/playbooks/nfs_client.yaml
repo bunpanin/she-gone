@@ -6,7 +6,7 @@
   # TODO: making this more dynamic by using internal ip from the inventory instead
   vars: 
     nfs_remote_dir: /srv/nfs_shared
-    nfs_server_ip: 10.184.0.3  # Jenkin machine (localhost here means jenkin server)
+    nfs_server_ip: 10.184.0.3
     nfs_local_dir: /mnt/nfs_shared
   tasks: 
   - name: Update APT 
@@ -37,3 +37,5 @@
       fstype: nfs 
       opts: defaults,_netdev 
       state: present 
+
+

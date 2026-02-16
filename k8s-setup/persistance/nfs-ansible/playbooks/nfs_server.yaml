@@ -13,9 +13,6 @@
       - 10.148.0.12
       - 10.148.0.13
   tasks: 
-    - name: Update APT caches 
-      apt: 
-        update_cache: yes 
     - name: Install NFS Kernel Server 
       apt: 
         name: nfs-kernel-server
