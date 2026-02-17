@@ -7,11 +7,12 @@ nodeSelector:
 container:
   name: nginx-stagging-cont
   image: nginx:latest
+  pullPolicy: Always
   port: 80
   envs:
-  - name: POSTGRES_USERNAME
-    value: postgres-sql-stag
-  - name: POSTGRES_PASSWORD
-    value: s348432sdfbsfewff
-  - name: POSTGRES_DB
-    value: db_stag
+    - name: POSTGRES_USERNAME
+      value: postgres-sql-stag
+    - name: POSTGRES_PASSWORD
+      value: s348432sdfbsfewff
+    - name: POSTGRES_DB
+      value: db_stag
