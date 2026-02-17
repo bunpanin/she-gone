@@ -1,6 +1,9 @@
 appName:
   app: nginx-stagging
 replicas: 2
+nodeSelector:
+  kubernetes.io/hostname: node5-stag
+  # testing: stage-testing
 container:
   name: nginx-stagging-cont
   image: nginx:latest
