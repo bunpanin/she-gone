@@ -5,7 +5,16 @@ render-prod:
 render-stag:
     helm template custom-chart --values custom-chart/stag-values.yaml
 
+render-prod-v2:
+    helm template custom-chart-v2 --values custom-chart-v2/prod-values.yaml
+
+release-prod-v2:
+    helm upgrade prod-release custom-chart-v2 --values custom-chart-v2/prod-values.yaml --install
+
 release-prod:
     helm upgrade prod-release custom-chart --values custom-chart/values.yaml --install
 release-stag:
     helm upgrade stag-release custom-chart --values custom-chart/stag-values.yaml --install
+
+
+
