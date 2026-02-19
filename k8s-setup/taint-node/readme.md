@@ -3,7 +3,8 @@
 ### Taint the node
  To prevent the master node in a Kubernetes cluster from running any services
 ```bash
-kubectl taint nodes node2 node-role.kubernetes.io/master=:NoSchedule
+kubectl taint nodes node3 node-role.kubernetes.io/master=:NoSchedule
+kubectl taint nodes node3 node-role.kubernetes.io/control-plane=:NoSchedule
 
 # to check the tains status of the node 
 kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, taints: .spec.taints}'
@@ -11,7 +12,10 @@ kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, taints: .spec.
 ### Untaint the node 
 - If you later decide to allow pods to run on the master node, you can remove the taint using the following command:
 ```bash
-kubectl taint nodes node2 node-role.kubernetes.io/master-
+kubectl taint nodes node3 node-role.kubernetes.io/master-
+kubectl taint nodes node2 node-role.kubernetes.io/control-plane-
+kubectl taint nodes node3 service=disabled:NoSchedule-
+
 kubectl get node # Get nodes name
 ```
 ```bash
