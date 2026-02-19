@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: first-argocd-declarative-app
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/bunpanin/playaround-helms-argocd-repo
+    targetRevision: HEAD
+    path: plainting-chart
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    syncOptions:
+      - Validate=false
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true
+ 
