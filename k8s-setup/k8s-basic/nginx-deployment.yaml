@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: nginx-container
-        image: nginx:latest
+        image: paninbaychar/k8s-react-template:07c8a20b
         ports:
         - containerPort: 80
