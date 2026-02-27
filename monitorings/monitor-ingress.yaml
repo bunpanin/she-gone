@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ingress
+  namespace: default 
+  annotations: 
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  labels:
+    app.kubernetes.io/name: prometheus-ingress
+spec: 
+  ingressClassName: "nginx"
+  tls: 
+    - hosts: 
+      - prometheus.bunpanin.online
+      - grafana.bunpanin.online
+      secretName: kube-stack-new-tls
+  rules: 
+    - host: prometheus.bunpanin.online
+      http:
+        paths: 
+          - pathType: Prefix 
+            path: "/"
+            backend: 
+              service: 
+                name: monitor-stack-release-kube-prometheus
+                port: 
+                  number: 9090
+    - host: grafana.bunpanin.online
+      http:
+        paths: 
+          - pathType: Prefix 
+            path: "/"
+            backend: 
+              service: 
+                name: monitor-stack-release-grafana 
+                port: 
+                  number: 80
