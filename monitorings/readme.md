@@ -1,6 +1,7 @@
 ## Note 
 
 1. Add repo of the monitoring helm chart 
+
 ```bash 
 helm repo add prometheus-community \
     https://prometheus-community.github.io/helm-charts
@@ -16,12 +17,17 @@ kubectl --namespace default \
 
 - grafana.bunpanin.online
     - username : `admin`
-    - password : `prom-operator`    
+    - password : `admin/admin`    
+- Because you installed via kube-prometheus-stack Helm, the password is stored in a Kubernetes Secret.
+# password and username still admin
+kubectl get secret monitor-stack-release-grafana \
+  -o jsonpath="{.data.admin-password}" | base64 --decode
+```
 
 kubectl get secret -n default monitor-stack-release-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 
 kubectl get secret -n default monitor-stack-release-grafana -o jsonpath="{.data.admin-password}" | base64 --decode 
-```
+
 
 ### Configure the domain name for the prometheus and grafana 
 - We only need to configure the domain name for the grafana as the visualizer for seeing things
@@ -39,6 +45,8 @@ helm upgrade \
     prometheus-community/kube-prometheus-stack \
     -f values.yaml \
     -n default --install
+
+x
 
 
 # forward-port in order to access the services 
