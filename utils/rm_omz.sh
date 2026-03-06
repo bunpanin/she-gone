@@ -26,14 +26,7 @@ if [ -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
   rm -rf "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
-# Restore default shell to bash if zsh is current shell
-CURRENT_SHELL=$(basename "$SHELL")
-if [ "$CURRENT_SHELL" = "zsh" ]; then
-  if command -v bash >/dev/null 2>&1; then
-    echo "Changing default shell back to bash..."
-    chsh -s $(which bash)
-  fi
-fi
+echo "Skipping default shell change (not required on cloud instances)"
 
 # Remove zsh configuration file
 if [ -f "$HOME/.zshrc" ]; then
