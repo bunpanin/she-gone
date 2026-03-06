@@ -25,8 +25,11 @@ fi
 # Install Oh My Zsh if not installed
 if [ ! -d "$ZSH_DIR" ]; then
   echo "Installing Oh My Zsh..."
-  RUNZSH=no CHSH=yes KEEP_ZSHRC=yes \
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  export RUNZSH=no
+  export CHSH=yes
+  export KEEP_ZSHRC=yes
+
+  yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 else
   echo "Oh My Zsh already installed"
 fi
